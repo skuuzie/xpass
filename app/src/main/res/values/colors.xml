@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="jet_black">#2f2f2f</color>
+    <color name="jet_gray">#807E7E</color>
+    <color name="anti_flash_white">#EFF2F1</color>
+    <color name="glaucous_blue">#6E7DAB</color>
+    <color name="crayola_red">#E84855</color>
+    <color name="mantis_green">#7AC74F</color>
+</resources>

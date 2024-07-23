@@ -1,0 +1,13 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Xpass" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/jet_black</item>
+        <item name="colorSecondary">@color/glaucous_blue</item>
+        <item name="background">@color/white</item>
+        <item name="colorSurfaceContainerHigh">@color/white</item>
+        <item name="colorSurfaceContainer">@color/white</item>
+    </style>
+
+    <style name="Theme.Xpass" parent="Base.Theme.Xpass" />
+</resources>
