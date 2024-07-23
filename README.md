@@ -1,6 +1,6 @@
 # Xpass
 
-secure offline password manager Android app. a refreshing project
+secure offline password manager Android app. a refreshing project.
 
 ---
 
@@ -17,6 +17,8 @@ Tech/Implementation summary:
 - Room for local database
 - Customized app security [module](app/libs/droidguard/) written in Go (compiled to shared library)
 - Code shrinking/obfuscation enabled
+
+Demo APK release [here](https://github.com/skuuzie/xpass/releases/tag/v.0.1.0-alpha)
 
 ---
 
