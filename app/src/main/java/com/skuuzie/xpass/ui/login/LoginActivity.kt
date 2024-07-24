@@ -10,12 +10,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.lifecycleScope
 import com.skuuzie.xpass.R
 import com.skuuzie.xpass.databinding.ActivityLoginBinding
 import com.skuuzie.xpass.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -88,8 +86,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login(password: String) {
-        lifecycleScope.launch {
-            viewModel.loadUserPassword(password)
-        }
+        viewModel.loadUserPassword(password)
     }
 }
