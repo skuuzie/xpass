@@ -40,11 +40,12 @@ func checkEmulator() {
 		}
 	}
 
+    // TODO: more emulator model check?
 	out, err = exec.Command("/bin/sh", "-c", "getprop ro.product.vendor.model").Output()
 	if err != nil {
 		util.AndroidDebugLog("CheckEmulator", err.Error())
 	} else {
-		if strings.ToLower(string(out)) != SDKGooglePhoneTag {
+		if strings.ToLower(string(out)) == SDKGooglePhoneTag {
 			util.AndroidExit("phone model")
 		}
 	}
