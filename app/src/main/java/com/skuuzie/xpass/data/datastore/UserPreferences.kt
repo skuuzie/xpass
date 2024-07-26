@@ -7,17 +7,15 @@ import androidx.datastore.preferences.core.byteArrayPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = "this_user")
 
-class UserPreferences @Inject constructor(@ApplicationContext appContext: Context) {
+class UserPreferences(appContext: Context) {
     private val datastore = appContext.datastore
     private val USER_NAME = stringPreferencesKey("name") // plaintext
-    private val MASTER_KEY = byteArrayPreferencesKey("dk") // encrypted by USER_KEY
+    private val MASTER_KEY = byteArrayPreferencesKey("mk") // encrypted by USER_KEY
     private val USER_KEY = byteArrayPreferencesKey("ukh") // hashed
 
     val username: Flow<String> =

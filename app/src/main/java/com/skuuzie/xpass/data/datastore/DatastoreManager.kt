@@ -4,15 +4,13 @@ import com.skuuzie.xpass.util.XCrypto
 import godroidguard.Godroidguard
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class DatastoreManager @Inject constructor(
+class DatastoreManager(
     private val userPreferences: UserPreferences
 ) {
-    var currentUserUsername: Flow<String> = userPreferences.username.map { it }
-    var currentUserKey: Flow<ByteArray> = userPreferences.userKey.map { it }
-    var currentMasterKey: Flow<ByteArray> = userPreferences.masterKey.map { it }
+    var currentUserUsername: Flow<String> = userPreferences.username
+    var currentUserKey: Flow<ByteArray> = userPreferences.userKey
+    var currentMasterKey: Flow<ByteArray> = userPreferences.masterKey
 
     // Load user input password if verified
     suspend fun loadUserPassword(password: String): Boolean {
@@ -20,6 +18,7 @@ class DatastoreManager @Inject constructor(
         val real = currentUserKey.first()
 
         if (real.contentEquals(inp)) {
+            XCrypto.setKey(XCrypto.getSurfaceKey())
             val upass = Godroidguard.authenticatedHash(password.encodeToByteArray())
             XCrypto.setKey(upass)
 
@@ -41,6 +40,7 @@ class DatastoreManager @Inject constructor(
         userPreferences.updateUserKey(hashedPassword)
 
         // Immediately change the current key with the new password
+        XCrypto.setKey(XCrypto.getSurfaceKey())
         val upass = Godroidguard.authenticatedHash(password.encodeToByteArray())
         XCrypto.setKey(upass)
 
