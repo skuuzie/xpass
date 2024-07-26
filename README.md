@@ -18,7 +18,7 @@ Tech/Implementation summary:
 - Customized app security [module](app/libs/droidguard/) written in Go (compiled to shared library)
 - Code shrinking/obfuscation enabled
 
-Demo APK release [here](https://github.com/skuuzie/xpass/releases/tag/v.0.1.0-alpha)
+Demo APK release [here](https://github.com/skuuzie/xpass/releases)
 
 ---
 
