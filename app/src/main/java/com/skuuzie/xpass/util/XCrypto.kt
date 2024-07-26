@@ -40,4 +40,48 @@ object XCrypto {
     fun setKey(key: ByteArray) {
         Godroidguard.setKey(key)
     }
+
+    /*
+        Only used for password hashing on surface level, internal and sensitive implementation
+        is still handled by the native Go code
+     */
+    fun getSurfaceKey(): ByteArray {
+        setKey(
+            byteArrayOf(
+                42,
+                21,
+                25,
+                47,
+                8,
+                29,
+                122,
+                8,
+                105,
+                18,
+                56,
+                100,
+                80,
+                118,
+                23,
+                18,
+                52,
+                14,
+                62,
+                92,
+                38,
+                102,
+                66,
+                97,
+                54,
+                99,
+                16,
+                86,
+                93,
+                6,
+                104,
+                81
+            )
+        )
+        return Godroidguard.genericHash(byteArrayOf(1))
+    }
 }
