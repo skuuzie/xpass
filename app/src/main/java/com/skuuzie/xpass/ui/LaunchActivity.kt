@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
 class LaunchActivity : AppCompatActivity() {
 
     private val viewModel: LaunchViewModel by viewModels()
+    private lateinit var _intent: Intent
+    private var initState: LaunchActivityInitState? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -24,30 +26,30 @@ class LaunchActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        var initState: MainActivityInitState = MainActivityInitState.Loading
-
-        lifecycleScope.launch {
-            viewModel.initState.collect {
-                initState = it
+        splashScreen.setKeepOnScreenCondition {
+            when (initState) {
+                null -> true
+                LaunchActivityInitState.Loading -> true
+                is LaunchActivityInitState.Finished -> false
             }
         }
 
-        splashScreen.setKeepOnScreenCondition {
-            when (initState) {
-                MainActivityInitState.Loading -> true
-                is MainActivityInitState.Finished -> {
-                    if ((initState as MainActivityInitState.Finished).isRegistered) {
-                        Intent(this, LoginActivity::class.java).run {
-                            startActivity(this)
-                            finish()
+        lifecycleScope.launch {
+            viewModel.initializeDatastore().collect {
+                initState = it
+                when (initState) {
+                    is LaunchActivityInitState.Finished -> {
+                        if ((initState as LaunchActivityInitState.Finished).isRegistered) {
+                            _intent = Intent(this@LaunchActivity, LoginActivity::class.java)
+                        } else {
+                            _intent = Intent(this@LaunchActivity, RegisterActivity::class.java)
                         }
-                    } else {
-                        Intent(this, RegisterActivity::class.java).run {
-                            startActivity(this)
-                            finish()
-                        }
+                        startActivity(_intent)
+                        finish()
                     }
-                    false
+
+                    LaunchActivityInitState.Loading -> {}
+                    null -> {}
                 }
             }
         }
