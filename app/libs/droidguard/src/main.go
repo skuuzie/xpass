@@ -5,10 +5,12 @@ import (
 	"time"
 )
 
+var firstBeat bool
 var droidGuard *service.DroidGuard
 
 // reserved symbol for entry point
 func init() {
+	firstBeat = true
 	droidGuard = service.NewDroidGuard([]byte("godroidguard"))
 	droidGuard.Watcher.DeviceEnv()
 	go func() {
@@ -19,11 +21,17 @@ func init() {
 	}()
 }
 
+// Check whether the module is initialized for the first time
+func IsInitialization() bool {
+	return firstBeat
+}
+
 // Set the cryptographic key. The struct is stateless, previous SetKey() calls does not matter
 //
 // SetKey("somekey") can always be used to decrypt any ciphertext encrypted with "somekey",
 // regardless any other key has been set before
 func SetKey(key []byte) {
+	firstBeat = false
 	droidGuard.Cryptor.ReloadKey(key)
 	droidGuard.Error.Message = droidGuard.Cryptor.GetLastErrorMessage()
 }
