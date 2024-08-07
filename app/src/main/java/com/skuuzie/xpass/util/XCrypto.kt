@@ -82,6 +82,6 @@ object XCrypto {
                 81
             )
         )
-        return Godroidguard.genericHash(byteArrayOf(1))
+        return Godroidguard.authenticatedHash(byteArrayOf(1))
     }
 }
