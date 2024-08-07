@@ -18,7 +18,9 @@ import com.skuuzie.xpass.R
 import com.skuuzie.xpass.data.local.database.Credential
 import com.skuuzie.xpass.databinding.ActivityHomeBinding
 import com.skuuzie.xpass.ui.credential.CredentialActivity
+import com.skuuzie.xpass.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
+import godroidguard.Godroidguard
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -38,6 +40,17 @@ class HomeActivity : AppCompatActivity() {
         setupRecyclerView()
         setupClickListener()
         setupGetCredentials()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (Godroidguard.isInitialization()) {
+            finish()
+            Intent(this, LoginActivity::class.java).run {
+                startActivity(this)
+            }
+        }
     }
 
     private fun setupGetCredentials() {

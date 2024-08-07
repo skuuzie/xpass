@@ -1,5 +1,6 @@
 package com.skuuzie.xpass.ui.credential
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
@@ -12,7 +13,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.skuuzie.xpass.R
 import com.skuuzie.xpass.data.local.database.Credential
 import com.skuuzie.xpass.databinding.ActivityCredentialBinding
+import com.skuuzie.xpass.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
+import godroidguard.Godroidguard
 
 @AndroidEntryPoint
 class CredentialActivity : AppCompatActivity() {
@@ -35,6 +38,17 @@ class CredentialActivity : AppCompatActivity() {
         setupAppBarMenu()
         setupEditText()
         setupClickListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (Godroidguard.isInitialization()) {
+            finish()
+            Intent(this, LoginActivity::class.java).run {
+                startActivity(this)
+            }
+        }
     }
 
     private fun updateCredential() {
