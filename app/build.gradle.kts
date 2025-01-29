@@ -4,7 +4,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("kotlin-parcelize")
     id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -19,6 +19,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
     }
 
     buildTypes {
@@ -44,6 +45,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    testOptions {
+        animationsDisabled = true
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
+    }
 }
 
 dependencies {
@@ -52,15 +57,23 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.espresso.idling.resource)
+    implementation(libs.androidx.espresso.contrib)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.espresso.intents)
+    androidTestUtil(libs.androidx.orchestrator)
 
     // godroidguard
-    implementation(fileTree(mapOf(
-        "dir" to "libs\\droidguard\\build",
-        "include" to listOf("*.aar", "*.jar")
-    )))
+    implementation(
+        fileTree(
+            mapOf(
+                "dir" to "libs\\droidguard\\build",
+                "include" to listOf("*.aar", "*.jar")
+            )
+        )
+    )
 
     // Hilt
     implementation(libs.hilt.android)
