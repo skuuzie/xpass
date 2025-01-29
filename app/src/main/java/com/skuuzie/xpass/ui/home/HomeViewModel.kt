@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.skuuzie.xpass.data.local.CredentialRepository
 import com.skuuzie.xpass.data.local.database.Credential
+import com.skuuzie.xpass.util.EspressoIdlingResource
+import com.skuuzie.xpass.util.wrapEspressoIdlingResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -19,11 +21,16 @@ class HomeViewModel @Inject constructor(
     // Data source is a local Room database, better use flow
     fun getCredentials(): Flow<HomeUiState> = flow {
         emit(HomeUiState.Loading)
+
+        EspressoIdlingResource.increment()
+
         credentialRepository.mCredentials.collect { credentials ->
             try {
                 emit(HomeUiState.Success(credentials))
+                EspressoIdlingResource.decrement()
             } catch (e: Exception) {
                 emit(HomeUiState.Error(e.message.toString()))
+                EspressoIdlingResource.decrement()
             }
         }
     }
@@ -32,17 +39,24 @@ class HomeViewModel @Inject constructor(
     // MutableLiveData is not necessary
     fun addNewCredential(): LiveData<HomeUiState> = liveData {
         emit(HomeUiState.Loading)
-        val cred = Credential(
-            uuid = UUID.randomUUID().toString(),
-            platform = "New Credential",
-            username = "-",
-            email = "-",
-            password = "-"
-        )
-        val clearCred = cred.copy()
 
-        credentialRepository.addCredential(cred)
-        emit(HomeUiState.Success(listOf(clearCred)))
+        wrapEspressoIdlingResource {
+            try {
+                val cred = Credential(
+                    uuid = UUID.randomUUID().toString(),
+                    platform = "New Credential",
+                    username = "-",
+                    email = "-",
+                    password = "-"
+                )
+                val clearCred = cred.copy()
+
+                credentialRepository.addCredential(cred)
+                emit(HomeUiState.Success(listOf(clearCred)))
+            } catch (e: Exception) {
+                emit(HomeUiState.Error(e.message.toString()))
+            }
+        }
     }
 }
 
