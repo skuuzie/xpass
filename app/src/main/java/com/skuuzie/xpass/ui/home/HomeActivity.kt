@@ -5,14 +5,13 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.skuuzie.xpass.R
 import com.skuuzie.xpass.data.local.database.Credential
@@ -55,19 +54,20 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setupGetCredentials() {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.getCredentials().collect {
-                    when (it) {
-                        HomeUiState.Loading -> {}
-                        is HomeUiState.Error -> {}
-                        is HomeUiState.Success -> {
-                            if (it.data.isEmpty()) {
-                                animateCrossFade(binding.layoutEmptyMessage, binding.rvCredentials)
-                            } else {
-                                adapter.submitList(it.data)
-                                binding.rvCredentials.adapter = adapter
-                                animateCrossFade(binding.rvCredentials, binding.layoutEmptyMessage)
-                            }
+            viewModel.getCredentials().collect {
+                when (it) {
+                    HomeUiState.Loading -> {}
+                    is HomeUiState.Error -> {
+                        showToast(it.message)
+                    }
+
+                    is HomeUiState.Success -> {
+                        if (it.data.isEmpty()) {
+                            animateCrossFade(binding.layoutEmptyMessage, binding.rvCredentials)
+                        } else {
+                            adapter.submitList(it.data)
+                            binding.rvCredentials.adapter = adapter
+                            animateCrossFade(binding.rvCredentials, binding.layoutEmptyMessage)
                         }
                     }
                 }
@@ -76,11 +76,14 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupClickListener() {
-        binding.btnFab.setOnClickListener {
+        binding.btnAddNewCredential.setOnClickListener {
             viewModel.addNewCredential().observe(this) {
                 when (it) {
                     HomeUiState.Loading -> {}
-                    is HomeUiState.Error -> {}
+                    is HomeUiState.Error -> {
+                        showToast(it.message)
+                    }
+
                     is HomeUiState.Success -> {
                         Intent(this@HomeActivity, CredentialActivity::class.java).apply {
                             putExtra(CredentialActivity.EXTRA_CREDENTIAL, it.data.first())
@@ -105,6 +108,10 @@ class HomeActivity : AppCompatActivity() {
         )
     }
 
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun setupRecyclerView() {
         adapter = HomeAdapter()
 
@@ -114,7 +121,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupEdgeToEdge() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.home_root)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets

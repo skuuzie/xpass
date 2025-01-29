@@ -73,6 +73,10 @@ class CredentialActivity : AppCompatActivity() {
                     }
                     showToast("Credential updated.")
                 }
+
+                is CredentialUiState.Error -> {
+                    showToast(it.message)
+                }
             }
         }
     }
@@ -88,6 +92,10 @@ class CredentialActivity : AppCompatActivity() {
                         CredentialUiState.Success -> {
                             showToast("Credential deleted.")
                             finish()
+                        }
+
+                        is CredentialUiState.Error -> {
+                            showToast(it.message)
                         }
                     }
                 }
@@ -128,7 +136,7 @@ class CredentialActivity : AppCompatActivity() {
     }
 
     private fun setupEdgeToEdge() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.credential_root)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
