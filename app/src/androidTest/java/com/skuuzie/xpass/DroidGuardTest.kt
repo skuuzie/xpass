@@ -2,9 +2,10 @@ package com.skuuzie.xpass
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import godroidguard.Godroidguard
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.runner.RunWith
 
 // This is actually just a unit test for DroidGuard module,
